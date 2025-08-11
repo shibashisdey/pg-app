@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PG Finder - Find Your Perfect Paying Guest Accommodation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23f8f9fa"><polygon points="0,100 100,0 1000,0 1000,100"/></svg>');
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: -50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .features {
+            padding: 4rem 0;
+        }
+
+        .features h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .results {
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .pg-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .pg-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .pg-card-content {
+            padding: 1.5rem;
+        }
+
+        .pg-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .pg-details {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .pg-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .amenity-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.3rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .error {
+            color: #dc3545;
+            text-align: center;
+            padding: 1rem;
+            background: #f8d7da;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">🏠 PG Finder</div>
+            <div class="nav-links">
+                <a href="#" onclick="showSection('search')">Search PGs</a>
+                <a href="#" onclick="showSection('register')">Register</a>
+                <a href="#" onclick="showSection('login')">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Find Your Perfect PG</h1>
+            <p>Discover comfortable and affordable paying guest accommodations near you</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="search-section">
+            <form class="search-form" onsubmit="searchPGs(event)">
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" placeholder="Enter city name">
+                </div>
+                <div class="form-group">
+                    <label for="minRent">Min Rent</label>
+                    <input type="number" id="minRent" placeholder="5000">
+                </div>
+                <div class="form-group">
+                    <label for="maxRent">Max Rent</label>
+                    <input type="number" id="maxRent" placeholder="15000">
+                </div>
+                <div class="form-group">
+                    <label for="pgType">PG Type</label>
+                    <select id="pgType">
+                        <option value="">Any</option>
+                        <option value="BOYS">Boys Only</option>
+                        <option value="GIRLS">Girls Only</option>
+                        <option value="COED">Co-ed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Search PGs</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="results" class="results">
+            <h2>Search Results</h2>
+            <div id="pg-list"></div>
+        </div>
+
+        <section class="features">
+            <h2>Why Choose PG Finder?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Advanced Search</h3>
+                    <p>Find PGs with powerful filters including location, price, amenities, and more</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✅</div>
+                    <h3>Verified Listings</h3>
+                    <p>All PGs are verified by our team to ensure authentic and reliable information</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Reviews & Ratings</h3>
+                    <p>Read genuine reviews from current and past residents to make informed decisions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Easy Communication</h3>
+                    <p>Connect directly with PG owners through our platform for quick responses</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 PG Finder. Making PG hunting simple and reliable.</p>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE_URL = '/api';
+
+        async function searchPGs(event) {
+            event.preventDefault();
+            
+            const city = document.getElementById('city').value;
+            const minRent = document.getElementById('minRent').value;
+            const maxRent = document.getElementById('maxRent').value;
+            const pgType = document.getElementById('pgType').value;
+
+            const resultsDiv = document.getElementById('results');
+            const pgListDiv = document.getElementById('pg-list');
+            
+            // Show loading
+            pgListDiv.innerHTML = '<div class="loading">🔄 Searching for PGs...</div>';
+            resultsDiv.style.display = 'block';
+
+            try {
+                let url = `${API_BASE_URL}/pgs`;
+                const params = new URLSearchParams();
+
+                if (city || minRent || maxRent || pgType) {
+                    url = `${API_BASE_URL}/pgs/filter`;
+                    if (city) params.append('city', city);
+                    if (minRent) params.append('minRent', minRent);
+                    if (maxRent) params.append('maxRent', maxRent);
+                    if (pgType) params.append('pgType', pgType);
+                }
+
+                if (params.toString()) {
+                    url += '?' + params.toString();
+                }
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayPGs(data.pgs);
+                } else {
+                    pgListDiv.innerHTML = '<div class="error">Failed to fetch PGs. Please try again.</div>';
+                }
+            } catch (error) {
+                console.error('Error searching PGs:', error);
+                pgListDiv.innerHTML = '<div class="error">An error occurred while searching. Please try again.</div>';
+            }
+        }
+
+        function displayPGs(pgs) {
+            const pgListDiv = document.getElementById('pg-list');
+            
+            if (pgs.length === 0) {
+                pgListDiv.innerHTML = '<div class="error">No PGs found matching your criteria. Try adjusting your search filters.</div>';
+                return;
+            }
+
+            const pgCards = pgs.map(pg => `
+                <div class="pg-card">
+                    <div class="pg-card-content">
+                        <div class="pg-title">${pg.name}</div>
+                        <div class="pg-details">
+                            📍 ${pg.address}, ${pg.city}, ${pg.state}
+                            <br>
+                            🏠 ${pg.pgType} • ${pg.genderPreference}
+                            <br>
+                            🛏️ ${pg.availableRooms}/${pg.totalRooms} rooms available
+                            ${pg.rating > 0 ? `<br>⭐ ${pg.rating}/5 (${pg.totalReviews} reviews)` : ''}
+                        </div>
+                        <div class="pg-price">₹${pg.rent}/month</div>
+                        <div class="amenities">
+                            ${pg.wifiAvailable ? '<span class="amenity-tag">📶 WiFi</span>' : ''}
+                            ${pg.acAvailable ? '<span class="amenity-tag">❄️ AC</span>' : ''}
+                            ${pg.parkingAvailable ? '<span class="amenity-tag">🚗 Parking</span>' : ''}
+                            ${pg.laundryAvailable ? '<span class="amenity-tag">👔 Laundry</span>' : ''}
+                            ${pg.kitchenAvailable ? '<span class="amenity-tag">🍳 Kitchen</span>' : ''}
+                            ${pg.mealsProvided ? '<span class="amenity-tag">🍽️ Meals</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            pgListDiv.innerHTML = pgCards;
+        }
+
+        // Load some sample PGs when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch(`${API_BASE_URL}/pgs`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.pgs.length > 0) {
+                        document.getElementById('results').style.display = 'block';
+                        displayPGs(data.pgs.slice(0, 5)); // Show first 5 PGs
+                    }
+                })
+                .catch(error => console.log('No initial data available'));
+        });
+    </script>
+</body>
+</html>
