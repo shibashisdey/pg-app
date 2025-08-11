@@ -1,0 +1,992 @@
+{
+  "info": {
+    "name": "PG Finder API Collection",
+    "description": "Complete API collection for PG Finder application with JWT authentication, email verification, and image upload",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "pg_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "image_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User with Email Verification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (responseCode.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.user && jsonData.user.id) {",
+                  "        pm.collectionVariables.set('user_id', jsonData.user.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\",\n  \"phoneNumber\": \"9876543210\",\n  \"userType\": \"USER\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["users", "auth", "register"]
+            },
+            "description": "Register a new user with email verification required"
+          },
+          "response": []
+        },
+        {
+          "name": "Register Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Owner\",\n  \"email\": \"testowner@example.com\",\n  \"password\": \"password123\",\n  \"phoneNumber\": \"9876543211\",\n  \"userType\": \"OWNER\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["users", "auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login (JWT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (responseCode.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data) {",
+                  "        pm.collectionVariables.set('access_token', jsonData.data.accessToken);",
+                  "        pm.collectionVariables.set('refresh_token', jsonData.data.refreshToken);",
+                  "        pm.collectionVariables.set('user_id', jsonData.data.userId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@pgfinder.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["users", "auth", "login"]
+            },
+            "description": "Login with admin credentials to get JWT tokens"
+          },
+          "response": []
+        },
+        {
+          "name": "Login with Test User (Pre-verified)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (responseCode.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data) {",
+                  "        pm.collectionVariables.set('access_token', jsonData.data.accessToken);",
+                  "        pm.collectionVariables.set('refresh_token', jsonData.data.refreshToken);",
+                  "        pm.collectionVariables.set('user_id', jsonData.data.userId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["users", "auth", "login"]
+            },
+            "description": "Login with pre-verified owner account"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (responseCode.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data) {",
+                  "        pm.collectionVariables.set('access_token', jsonData.data.accessToken);",
+                  "        pm.collectionVariables.set('refresh_token', jsonData.data.refreshToken);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["users", "auth", "refresh"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@pgfinder.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["users", "auth", "logout"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Email Verification",
+      "item": [
+        {
+          "name": "Verify Email (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/verify-email?token=YOUR_VERIFICATION_TOKEN_HERE",
+              "host": ["{{base_url}}"],
+              "path": ["users", "verify-email"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "YOUR_VERIFICATION_TOKEN_HERE",
+                  "description": "Replace with actual verification token from email"
+                }
+              ]
+            },
+            "description": "Verify email with token received in email"
+          },
+          "response": []
+        },
+        {
+          "name": "Resend Verification Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/resend-verification",
+              "host": ["{{base_url}}"],
+              "path": ["users", "resend-verification"]
+            },
+            "description": "Resend verification email (has 3-minute timeout protection)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"phoneNumber\": \"9876543299\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"admin123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}/change-password",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_id}}", "change-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Users by Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/type/OWNER",
+              "host": ["{{base_url}}"],
+              "path": ["users", "type", "OWNER"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/stats",
+              "host": ["{{base_url}}"],
+              "path": ["users", "stats"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PG Management",
+      "item": [
+        {
+          "name": "Create PG",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (responseCode.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.pg && jsonData.pg.id) {",
+                  "        pm.collectionVariables.set('pg_id', jsonData.pg.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test PG via Postman\",\n  \"description\": \"Modern PG with all amenities created via API\",\n  \"address\": \"123 API Street, Tech Park\",\n  \"city\": \"Bangalore\",\n  \"state\": \"Karnataka\",\n  \"pincode\": \"560001\",\n  \"rent\": 15000,\n  \"securityDeposit\": 30000,\n  \"pgType\": \"COED\",\n  \"genderPreference\": \"MIXED\",\n  \"totalRooms\": 20,\n  \"availableRooms\": 5,\n  \"maxOccupancyPerRoom\": 2,\n  \"wifiAvailable\": true,\n  \"acAvailable\": true,\n  \"parkingAvailable\": true,\n  \"laundryAvailable\": true,\n  \"kitchenAvailable\": true,\n  \"mealsProvided\": false,\n  \"cleaningService\": true,\n  \"smokingAllowed\": false,\n  \"drinkingAllowed\": false,\n  \"visitorsAllowed\": true,\n  \"petsAllowed\": false,\n  \"contactPerson\": \"API Owner\",\n  \"contactPhone\": \"9876543210\",\n  \"contactEmail\": \"apiowner@example.com\",\n  \"owner\": {\n    \"id\": 2\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/pgs",
+              "host": ["{{base_url}}"],
+              "path": ["pgs"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All PGs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs?page=0&size=10",
+              "host": ["{{base_url}}"],
+              "path": ["pgs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get PG by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs/1",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update PG",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated PG Name\",\n  \"description\": \"Updated description with new features\",\n  \"address\": \"123 Updated Street\",\n  \"city\": \"Bangalore\",\n  \"state\": \"Karnataka\",\n  \"pincode\": \"560001\",\n  \"rent\": 16000,\n  \"securityDeposit\": 32000,\n  \"pgType\": \"COED\",\n  \"genderPreference\": \"MIXED\",\n  \"totalRooms\": 25,\n  \"availableRooms\": 8,\n  \"maxOccupancyPerRoom\": 2,\n  \"wifiAvailable\": true,\n  \"acAvailable\": true,\n  \"parkingAvailable\": true,\n  \"laundryAvailable\": true,\n  \"kitchenAvailable\": true,\n  \"mealsProvided\": true,\n  \"cleaningService\": true,\n  \"smokingAllowed\": false,\n  \"drinkingAllowed\": false,\n  \"visitorsAllowed\": true,\n  \"petsAllowed\": false,\n  \"contactPerson\": \"Updated Owner\",\n  \"contactPhone\": \"9876543210\",\n  \"contactEmail\": \"updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/pgs/{{pg_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "{{pg_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search PGs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs/search?keyword=bangalore&page=0&size=10",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "search"],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "bangalore"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter PGs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs/filter?city=Bangalore&minRent=10000&maxRent=20000&pgType=COED&wifiRequired=true&acRequired=true&page=0&size=10",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "filter"],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "Bangalore"
+                },
+                {
+                  "key": "minRent",
+                  "value": "10000"
+                },
+                {
+                  "key": "maxRent",
+                  "value": "20000"
+                },
+                {
+                  "key": "pgType",
+                  "value": "COED"
+                },
+                {
+                  "key": "wifiRequired",
+                  "value": "true"
+                },
+                {
+                  "key": "acRequired",
+                  "value": "true"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get PGs by City",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs/city/Bangalore?page=0&size=10",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "city", "Bangalore"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get PGs by Owner",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs/owner/2?page=0&size=10",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "owner", "2"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available PGs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs/available?page=0&size=10",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "available"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Verified PGs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs/verified?page=0&size=10",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "verified"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Top Rated PGs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs/top-rated?minRating=4.0&minReviews=5&page=0&size=10",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "top-rated"],
+              "query": [
+                {
+                  "key": "minRating",
+                  "value": "4.0"
+                },
+                {
+                  "key": "minReviews",
+                  "value": "5"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Cities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs/cities",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "cities"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify PG (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pgs/1/verify",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "1", "verify"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Available Rooms",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pgs/1/update-rooms?availableRooms=3",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "1", "update-rooms"],
+              "query": [
+                {
+                  "key": "availableRooms",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete PG",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pgs/{{pg_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "{{pg_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Image Management",
+      "item": [
+        {
+          "name": "Upload PG Image",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (responseCode.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.image && jsonData.image.id) {",
+                  "        pm.collectionVariables.set('image_id', jsonData.image.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select an image file (JPG, PNG, etc.)"
+                },
+                {
+                  "key": "caption",
+                  "value": "Room view from API",
+                  "type": "text"
+                },
+                {
+                  "key": "isPrimary",
+                  "value": "false",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/pgs/1/images/upload",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "1", "images", "upload"]
+            },
+            "description": "Upload image for PG (requires file selection in form-data)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get PG Images",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pgs/1/images",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "1", "images"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Primary Image",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pgs/images/{{image_id}}/set-primary",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "images", "{{image_id}}", "set-primary"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Image Caption",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"caption\": \"Updated caption for the image\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/pgs/images/{{image_id}}/caption",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "images", "{{image_id}}", "caption"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Image",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pgs/images/{{image_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["pgs", "images", "{{image_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Legacy Endpoints (Non-JWT)",
+      "item": [
+        {
+          "name": "Legacy Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Legacy User\",\n  \"email\": \"legacy@example.com\",\n  \"password\": \"password123\",\n  \"phoneNumber\": \"9876543210\",\n  \"userType\": \"USER\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/register",
+              "host": ["{{base_url}}"],
+              "path": ["users", "register"]
+            },
+            "description": "Legacy registration endpoint (no email verification)"
+          },
+          "response": []
+        },
+        {
+          "name": "Legacy Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/login",
+              "host": ["{{base_url}}"],
+              "path": ["users", "login"]
+            },
+            "description": "Legacy login endpoint (no JWT tokens)"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

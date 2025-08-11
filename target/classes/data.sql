@@ -1,10 +1,10 @@
 -- Sample Users (Password: password123 encoded with BCrypt)
-INSERT INTO users (name, email, password, phone_number, user_type, is_active, created_at, updated_at) VALUES
-('John Doe', 'john@example.com', '$2a$10$eImiTXuWVxfM37uY4JANjOhcxzBg9.CfhFBPwRqYdNjWIZx3oOe1.', '9876543210', 'USER', true, NOW(), NOW()),
-('Jane Smith', 'jane@example.com', '$2a$10$eImiTXuWVxfM37uY4JANjOhcxzBg9.CfhFBPwRqYdNjWIZx3oOe1.', '9876543211', 'OWNER', true, NOW(), NOW()),
-('Mike Johnson', 'mike@example.com', '$2a$10$eImiTXuWVxfM37uY4JANjOhcxzBg9.CfhFBPwRqYdNjWIZx3oOe1.', '9876543212', 'OWNER', true, NOW(), NOW()),
-('Sarah Wilson', 'sarah@example.com', '$2a$10$eImiTXuWVxfM37uY4JANjOhcxzBg9.CfhFBPwRqYdNjWIZx3oOe1.', '9876543213', 'USER', true, NOW(), NOW()),
-('Admin User', 'admin@pgfinder.com', '$2a$10$eImiTXuWVxfM37uY4JANjOhcxzBg9.CfhFBPwRqYdNjWIZx3oOe1.', '9876543214', 'ADMIN', true, NOW(), NOW());
+INSERT INTO users (name, email, password, phone_number, user_type, is_active, is_verified, created_at, updated_at) VALUES
+('John Doe', 'john@example.com', '$2a$10$eImiTXuWVxfM37uY4JANjOhcxzBg9.CfhFBPwRqYdNjWIZx3oOe1.', '9876543210', 'USER', true, true, NOW(), NOW()),
+('Jane Smith', 'jane@example.com', '$2a$10$eImiTXuWVxfM37uY4JANjOhcxzBg9.CfhFBPwRqYdNjWIZx3oOe1.', '9876543211', 'OWNER', true, true, NOW(), NOW()),
+('Mike Johnson', 'mike@example.com', '$2a$10$eImiTXuWVxfM37uY4JANjOhcxzBg9.CfhFBPwRqYdNjWIZx3oOe1.', '9876543212', 'OWNER', true, true, NOW(), NOW()),
+('Sarah Wilson', 'sarah@example.com', '$2a$10$eImiTXuWVxfM37uY4JANjOhcxzBg9.CfhFBPwRqYdNjWIZx3oOe1.', '9876543213', 'USER', true, true, NOW(), NOW()),
+('System Administrator', 'admin@pgfinder.com', '$2a$10$eImiTXuWVxfM37uY4JANjOhcxzBg9.CfhFBPwRqYdNjWIZx3oOe1.', '+919876543210', 'ADMIN', true, true, NOW(), NOW());
 
 -- Sample PGs
 INSERT INTO pgs (name, description, address, city, state, pincode, rent, security_deposit, pg_type, gender_preference, total_rooms, available_rooms, max_occupancy_per_room, wifi_available, ac_available, parking_available, laundry_available, kitchen_available, meals_provided, cleaning_service, smoking_allowed, drinking_allowed, visitors_allowed, pets_allowed, contact_person, contact_phone, contact_email, is_active, is_verified, rating, total_reviews, owner_id, created_at, updated_at) VALUES

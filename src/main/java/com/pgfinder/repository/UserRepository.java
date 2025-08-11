@@ -25,4 +25,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     @Query("SELECT COUNT(u) FROM User u WHERE u.userType = :userType AND u.isActive = true")
     Long countActiveUsersByType(@Param("userType") User.UserType userType);
+    
+    // Email verification methods
+    Optional<User> findByVerificationToken(String verificationToken);
+    
+    // Refresh token methods
+    Optional<User> findByRefreshToken(String refreshToken);
 }

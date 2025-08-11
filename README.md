@@ -1,6 +1,6 @@
-# PG Finder - Spring Boot Application
+# PG Finder Application
 
-A comprehensive Spring Boot application for managing Paying Guest (PG) accommodations, similar to Zolo. This application allows users to search for PG accommodations and enables PG owners to register and manage their properties.
+A comprehensive Spring Boot application for managing Paying Guest (PG) accommodations with JWT authentication, email verification, and image upload capabilities.
 
 ## Features
 

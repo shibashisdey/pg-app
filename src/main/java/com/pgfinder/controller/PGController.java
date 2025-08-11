@@ -1,8 +1,10 @@
 package com.pgfinder.controller;
 
 import com.pgfinder.model.PG;
+import com.pgfinder.model.PGImage;
 import com.pgfinder.model.User;
 import com.pgfinder.service.PGService;
+import com.pgfinder.service.PGImageService;
 import com.pgfinder.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -29,6 +32,9 @@ public class PGController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private PGImageService pgImageService;
     
     @PostMapping
     public ResponseEntity<Map<String, Object>> createPG(@Valid @RequestBody PG pg) {
@@ -334,6 +340,139 @@ public class PGController {
         response.put("success", true);
         response.put("message", "Available rooms updated successfully");
         return ResponseEntity.ok(response);
+    }
+    
+    // ===============================
+    // PG IMAGE MANAGEMENT ENDPOINTS
+    // ===============================
+    
+    @PostMapping("/{pgId}/images/upload")
+    public ResponseEntity<?> uploadPGImage(
+            @PathVariable Long pgId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(required = false) String caption,
+            @RequestParam(defaultValue = "false") Boolean isPrimary) {
+        
+        try {
+            Optional<PG> pgOpt = pgService.findById(pgId);
+            if (pgOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            PG pg = pgOpt.get();
+            PGImage uploadedImage = pgImageService.uploadPGImage(pg, file, caption, isPrimary);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Image uploaded successfully");
+            response.put("image", uploadedImage);
+            
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", e.getMessage()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", "Failed to upload image: " + e.getMessage()
+            ));
+        }
+    }
+    
+    @GetMapping("/{pgId}/images")
+    public ResponseEntity<?> getPGImages(@PathVariable Long pgId) {
+        try {
+            Optional<PG> pgOpt = pgService.findById(pgId);
+            if (pgOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            PG pg = pgOpt.get();
+            List<PGImage> images = pgImageService.getImagesByPG(pg);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("images", images);
+            response.put("totalImages", images.size());
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", "Failed to retrieve images: " + e.getMessage()
+            ));
+        }
+    }
+    
+    @DeleteMapping("/images/{imageId}")
+    public ResponseEntity<?> deletePGImage(@PathVariable Long imageId) {
+        try {
+            pgImageService.deleteImage(imageId);
+            
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Image deleted successfully"
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", "Failed to delete image: " + e.getMessage()
+            ));
+        }
+    }
+    
+    @PutMapping("/images/{imageId}/set-primary")
+    public ResponseEntity<?> setPrimaryImage(@PathVariable Long imageId) {
+        try {
+            PGImage primaryImage = pgImageService.setPrimaryImage(imageId);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Primary image set successfully");
+            response.put("image", primaryImage);
+            
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", "Failed to set primary image: " + e.getMessage()
+            ));
+        }
+    }
+    
+    @PutMapping("/images/{imageId}/caption")
+    public ResponseEntity<?> updateImageCaption(
+            @PathVariable Long imageId,
+            @RequestBody Map<String, String> request) {
+        
+        try {
+            String caption = request.get("caption");
+            PGImage updatedImage = pgImageService.updateImageCaption(imageId, caption);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Image caption updated successfully");
+            response.put("image", updatedImage);
+            
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", e.getMessage()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", "Failed to update caption: " + e.getMessage()
+            ));
+        }
     }
     
     // Helper method to create pagination information

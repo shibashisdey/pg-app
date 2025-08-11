@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -43,6 +44,26 @@ public class User {
     
     @Column(name = "is_active")
     private Boolean isActive = true;
+    
+    // Email verification fields
+    @Column(name = "is_verified", nullable = false)
+    private boolean isVerified = false;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
+
+    @Column(name = "verification_token_expiry")
+    private LocalDateTime verificationTokenExpiry;
+
+    @Column(name = "last_verification_sent")
+    private LocalDateTime lastVerificationSent;
+
+    // JWT refresh token fields
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
+    @Column(name = "refresh_token_expiry")
+    private LocalDateTime refreshTokenExpiry;
     
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -166,5 +187,54 @@ public class User {
     
     public void setFavoritePGs(List<PG> favoritePGs) {
         this.favoritePGs = favoritePGs;
+    }
+    
+    // New getters and setters for email verification and JWT fields
+    public boolean isVerified() {
+        return isVerified;
+    }
+    
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
+    
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+    
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+    
+    public LocalDateTime getVerificationTokenExpiry() {
+        return verificationTokenExpiry;
+    }
+    
+    public void setVerificationTokenExpiry(LocalDateTime verificationTokenExpiry) {
+        this.verificationTokenExpiry = verificationTokenExpiry;
+    }
+    
+    public LocalDateTime getLastVerificationSent() {
+        return lastVerificationSent;
+    }
+    
+    public void setLastVerificationSent(LocalDateTime lastVerificationSent) {
+        this.lastVerificationSent = lastVerificationSent;
+    }
+    
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+    
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+    
+    public LocalDateTime getRefreshTokenExpiry() {
+        return refreshTokenExpiry;
+    }
+    
+    public void setRefreshTokenExpiry(LocalDateTime refreshTokenExpiry) {
+        this.refreshTokenExpiry = refreshTokenExpiry;
     }
 }
